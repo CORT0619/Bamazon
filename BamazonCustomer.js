@@ -28,8 +28,6 @@ function callback(err, rows, fields){
 	if(err)
 		throw err;
 
-	//console.log(rows[0].ProductName);
-
 	for(var data in rows){
 		console.log("\nProduct: " + rows[data].ProductName);
 		price = parseFloat(rows[data].Price).toFixed(2);
