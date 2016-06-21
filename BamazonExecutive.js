@@ -2,7 +2,7 @@
 var credentials = require('./credentials.js')
 var inquirer = require('inquirer');
 var mysql = require('mysql');
-var formatTable = require('cli-table');
+var Table = require('cli-table');
 
 var connection = mysql.createConnection({
 
@@ -32,19 +32,32 @@ inquirer.prompt({
 });
 
 function viewProdSales(){
+
+	var prodSales;
+	var overhead;
+	var totalProfit;
+
 	connection.connect();
 	connection.query("SELECT * FROM departments", function(err, rows, fields){
 
 		if(err) throw err;
 
 		var table = new Table({
-
+			chars: { 'top': '═', 'top-mid': '╤', 'top-left': '╔', 'top-right': '╗',
+  'bottom': '═', 'bottom-mid': '╧', 'bottom-left': '╚',
+  'bottom-right': '╝', 'left': '║', 'left-mid': '╟', 'mid': '─',
+  'mid-mid': '┼', 'right': '║', 'right-mid': '╢', 'middle': '│'},
 			head: ['DepartmentID', 'DepartmentName', 'OverHeadCosts', 'ProductSales', 'TotalProfit'],
-			colWidth: [25, 25]	
+			colWidths: [12, 25, 12, 12, 12]	
 		});
 
-		for(var data in rows)
-			table.push([rows[data].DepartmentID, rows[data].DepartmentName, rows[data].OverHeadCosts, rows[data].ProductSales, parseInt(rows[data].ProductSales) -  parseInt(rows[data].OverHeadCosts)]);
+		for(var data in rows){
+
+			table.push([rows[data].DepartmentID, rows[data].DepartmentName, rows[data].OverHeadCosts, rows[data].TotalSales, (parseInt(rows[data].TotalSales) - parseInt(rows[data].OverHeadCosts))]);
+		}
+
+		console.log(table.toString());
+		connection.end();
 
 	});
 }
