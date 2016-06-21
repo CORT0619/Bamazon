@@ -41,7 +41,9 @@ function beginApp(){
 	});	
 }
 
-beginApp().then(function(){
+beginApp().then(buy, exitApp);
+
+function buy(){
 
 	inquirer.prompt([{
 
@@ -118,31 +120,7 @@ beginApp().then(function(){
 					return false;
 				}
 			})
-/*
-			updateProd.then(function(){
-				inquirer.prompt({
-					name: 'whatsNext',
-					type: 'list',
-					message: '\nWhat would you like to do next?',
-					choices: ['   Buy Again', '   Exit']
-
-				}).then(function(answer){
-
-					switch(answer.whatsNext){
-						case '   Buy Again':
-							beginApp();
-						break;
-
-						case '   Exit':
-							exitApp();
-						break;
-					}
-				});
-			}, function(){
-
-				exitApp();
-			});*/
-				
+			
 			});
 
    			updateProd.then(function(){
@@ -156,7 +134,7 @@ beginApp().then(function(){
 
 					switch(answer.whatsNext){
 						case '   Buy Again':
-							beginApp();
+							beginApp().then(buy, exitApp);
 						break;
 
 						case '   Exit':
@@ -164,41 +142,10 @@ beginApp().then(function(){
 						break;
 					}
 				});
-			}, function(){
-
-				exitApp();
-			});
+			}, exitApp);
    });
 
-}, function(){
-
-	exitApp();
-});
-
-/*
-updateProd.then(function(){
-	inquirer.prompt({
-		name: 'whatsNext',
-		type: 'list',
-		message: '\nWhat would you like to do next?',
-		choices: ['   Buy Again', '   Exit']
-
-	}).then(function(answer){
-
-		switch(answer.whatsNext){
-			case '   Buy Again':
-				beginApp();
-			break;
-
-			case '   Exit':
-				exitApp();
-			break;
-		}
-	});
-}, function(){
-
-	exitApp();
-});*/
+}
 
 function viewAllProducts(){
 
