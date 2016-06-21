@@ -28,8 +28,6 @@ function callback(err, rows, fields){
 	if(err)
 		throw err;
 
-	console.log(rows);
-
 	for(var data in rows){
 		console.log("\nProduct Name: " + rows[data].ProductName);
 		console.log("Product ID: " + rows[data].ItemID);
@@ -72,7 +70,7 @@ function callback(err, rows, fields){
 
 	   }]).then(function(answers){
 
-  			connection.query('SELECT StockQuantity, Price FROM products WHERE ItemID=' + answers.prodID, 
+  			connection.query('SELECT StockQuantity, Price, DepartmentName FROM products WHERE ItemID=' + answers.prodID, 
 
    				function(err, rows, fields){
 
@@ -82,14 +80,19 @@ function callback(err, rows, fields){
    				var price = parseFloat(rows[0].Price);
 
    				var userQuan = parseInt(answers.quantity);
+   				var department = rows[0].DepartmentName;
 
    				if(result >= userQuan){
 
-   					console.log("Order Total: " + (userQuan * price).toFixed(2));
+   					var total = (userQuan * price).toFixed(2);
+
+   					console.log("Order Total: " + total);
 
    					result -= userQuan;
 
-   					var query = 'UPDATE products SET StockQuantity=' + result + ' WHERE ItemID=' + answers.prodID;
+   					var query = 'UPDATE products INNER JOIN departments ON products.DepartmentName = departments.DepartmentName SET products.StockQuantity=' + result + ', departments.totalSales= departments.totalSales +' + total + ' WHERE products.ItemID=' + answers.prodID + " AND departments.DepartmentName='" + department + "'";
+
+   					console.log(query);
 
    					connection.query(query, function(err, result){
 

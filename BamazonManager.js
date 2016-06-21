@@ -142,16 +142,19 @@ function addInventory(){
 					if(err) throw err;
 
 					console.log("\nProduct updated successfully!");
+					connection.end();
 
-					inquirer.prompt({
+					/*inquirer.prompt({
 						name: 'tryAgain',
 						type: 'list',
 						message: '\nWould you like to update another product?',
 						choices: ['Yes', 'No'],
 						validate: function(val){
 
+							console.log(val);
+
 							if(val == 'Yes'){
-								addInventory();
+								return addInventory();
 
 							} else {
 
@@ -159,7 +162,7 @@ function addInventory(){
 							}
 						}
 
-					});
+					});*/
 					
 				});
 
@@ -190,6 +193,64 @@ function addInventory(){
 }
 
 function newProduct(){
+
+	inquirer.prompt([{
+		name: 'newProdName',
+		type: 'input',
+		message: 'What is the name of the new product?'
+	}, {
+		name: 'newDept',
+		type: 'input',
+		message: 'What is the department for the new product?'
+	}, {
+		name: 'newPrice',
+		type: 'input',
+		message: 'What is the price of the new product?'/*,
+		validate: function(value){
+
+
+		}*/
+	}, {
+		name: 'newQty',
+		type: 'input',
+		message: 'How many of the new product are there?',
+		validate: function(value){
+
+			if(isNaN(value) == false){
+				return true;
+			} else {
+				console.log("Invalid input. Please try again.");
+				return false;
+			}
+		}
+	}]).then(function(answers){
+
+		connection.connect();
+
+		parseFloat(answers.newPrice).toFixed(2);
+		parseInt(answers.newQty);
+
+		//var insert = "INSERT INTO products (ProductName, DepartmentName, Price, StockQuantity) VALUES (?, ?,?)";
+
+		var insert = "INSERT INTO products SET ?"; 
+
+		connection.query(insert, {
+			ProductName: answers.newProdName,
+			DepartmentName: answers.newDept,
+			Price: answers.newPrice,
+			StockQuantity: answers.newQty 
+		}, function(err, rows, fields){
+
+			if(err) throw err;
+
+			console.log("New Product added successfully!");
+			connection.end();
+		});
+
+	});
+
+
+
 
 
 }
