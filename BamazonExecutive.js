@@ -12,24 +12,26 @@ var connection = mysql.createConnection({
 	database: 'bamazon'
 });
 
-inquirer.prompt({
-	name: 'whatToDo',
-	type: 'list',
-	message: 'Please choose from the list below.',
-	choices: ['   View Products Sales by Department', '   Create New Department']
+function beginApp() {
+	inquirer.prompt({
+		name: 'whatToDo',
+		type: 'list',
+		message: 'Please choose from the list below.',
+		choices: ['   View Products Sales by Department', '   Create New Department']
 
-}).then(function(answer){
+	}).then(function(answer){
 
-	switch(answer.whatToDo){
-		case '   View Products Sales by Department':
-			viewProdSales();
-		break;
+		switch(answer.whatToDo){
+			case '   View Products Sales by Department':
+				viewProdSales();
+			break;
 
-		case '   Create New Department':
-			newDepartment();
-		break;
-	}
-});
+			case '   Create New Department':
+				newDepartment();
+			break;
+		}
+	});
+}
 
 function viewProdSales(){
 
@@ -37,7 +39,7 @@ function viewProdSales(){
 	var overhead;
 	var totalProfit;
 
-	connection.connect();
+
 	connection.query("SELECT * FROM departments", function(err, rows, fields){
 
 		if(err) throw err;
@@ -57,9 +59,11 @@ function viewProdSales(){
 		}
 
 		console.log(table.toString());
-		connection.end();
-
+		//connection.end();
+		getNext();
 	});
+
+
 }
 
 function newDepartment(){
@@ -80,7 +84,7 @@ function newDepartment(){
 		message: 'Input the total sales of the new department.'		
 	}]).then(function(answers){
 
-		connection.connect();
+		//connection.connect();
 
 		var departInsert = "INSERT INTO departments(DepartmentName, OverHeadCosts, TotalSales) VALUES('" + answers.newDeptName + "', " + answers.overheadCosts + ", " + answers.totalSales + ")";
 
@@ -90,11 +94,41 @@ function newDepartment(){
 
 			if(err) throw err;
 
-			console.log("Department Successfully added!");
-
+			console.log("\nDepartment Successfully added!");
+			getNext();	
 		});		
-	})
+	});
 
 }
+
+function getNext(){
+
+	inquirer.prompt({
+		name: 'whatsNext',
+		type: 'list',
+		message: 'What would you like to do next?',
+		choices: ['   Continue', '   Exit']
+
+	}).then(function(answer){
+
+		switch(answer.whatsNext){
+			case '   Continue':
+				beginApp();
+			break;
+
+			case '   Exit':
+				exitApp();
+			break;
+		}
+	});
+}
+
+function exitApp(){
+
+	connection.end();
+}
+
+connection.connect();
+beginApp();
 
 
