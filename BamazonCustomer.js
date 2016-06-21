@@ -86,13 +86,13 @@ function callback(err, rows, fields){
 
    					var total = (userQuan * price).toFixed(2);
 
-   					console.log("Order Total: " + total);
+   					console.log("Order Total: $" + total);
 
    					result -= userQuan;
 
    					var query = 'UPDATE products INNER JOIN departments ON products.DepartmentName = departments.DepartmentName SET products.StockQuantity=' + result + ', departments.totalSales= departments.totalSales +' + total + ' WHERE products.ItemID=' + answers.prodID + " AND departments.DepartmentName='" + department + "'";
 
-   					console.log(query);
+   					//console.log(query);
 
    					connection.query(query, function(err, result){
 
