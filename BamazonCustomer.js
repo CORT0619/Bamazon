@@ -78,6 +78,7 @@ beginApp().then(function(){
 
    }]).then(function(answers){
 
+   		var updateProd = new Promise(function(resolve, reject){
 			connection.query('SELECT StockQuantity, Price, DepartmentName FROM products WHERE ItemID=' + answers.prodID, 
 
 				function(err, rows, fields){
@@ -107,6 +108,8 @@ beginApp().then(function(){
 
 						console.log("\nOrder successfully placed!");
 
+						resolve();
+
 					});
 
 				} else{
@@ -114,17 +117,19 @@ beginApp().then(function(){
 					console.log("Insufficient quantity.");
 					return false;
 				}
-
+			})
+/*
+			updateProd.then(function(){
 				inquirer.prompt({
 					name: 'whatsNext',
 					type: 'list',
 					message: '\nWhat would you like to do next?',
-					choices: ['   Continue', '   Exit']
+					choices: ['   Buy Again', '   Exit']
 
 				}).then(function(answer){
 
 					switch(answer.whatsNext){
-						case '   Continue':
+						case '   Buy Again':
 							beginApp();
 						break;
 
@@ -133,15 +138,67 @@ beginApp().then(function(){
 						break;
 					}
 				});
+			}, function(){
 
+				exitApp();
+			});*/
+				
+			});
+
+   			updateProd.then(function(){
+				inquirer.prompt({
+					name: 'whatsNext',
+					type: 'list',
+					message: '\nWhat would you like to do next?',
+					choices: ['   Buy Again', '   Exit']
+
+				}).then(function(answer){
+
+					switch(answer.whatsNext){
+						case '   Buy Again':
+							beginApp();
+						break;
+
+						case '   Exit':
+							exitApp();
+						break;
+					}
+				});
+			}, function(){
+
+				exitApp();
 			});
    });
 
 }, function(){
 
-	connection.end();
+	exitApp();
 });
 
+/*
+updateProd.then(function(){
+	inquirer.prompt({
+		name: 'whatsNext',
+		type: 'list',
+		message: '\nWhat would you like to do next?',
+		choices: ['   Buy Again', '   Exit']
+
+	}).then(function(answer){
+
+		switch(answer.whatsNext){
+			case '   Buy Again':
+				beginApp();
+			break;
+
+			case '   Exit':
+				exitApp();
+			break;
+		}
+	});
+}, function(){
+
+	exitApp();
+});*/
 
 function viewAllProducts(){
 
