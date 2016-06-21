@@ -14,7 +14,7 @@ var connection = mysql.createConnection({
 inquirer.prompt({
 	name: 'whatToDo',
 	type: 'list',
-	message: 'Please select choose from the list below.',
+	message: 'Please select from the list below.',
 	choices: ['   View Products for Sale', '   View Low Inventory', '   Add to Inventory', '   Add New Product']
 
 }).then(function(answer){
